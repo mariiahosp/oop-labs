@@ -1,7 +1,8 @@
 import os
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 from my_table import MyTable
+import csv
 
 from shapes import CubeShape, Ellipse, Line, LineWithCircles, Point, Rectangle
 from tooltip import ToolTip
@@ -110,6 +111,7 @@ class MyEditor:
         menu_bar = tk.Menu(self.root)
 
         file_menu = tk.Menu(menu_bar, tearoff=0)
+        file_menu.add_command(label="Зберегти", command=self.save_shapes)
         file_menu.add_command(label="Очистити", command=self.clear_canvas)
         file_menu.add_separator()
         file_menu.add_command(label="Вихід", command=self.root.destroy)
@@ -129,7 +131,9 @@ class MyEditor:
         menu_bar.add_cascade(label="Об'єкти", menu=self.objects_menu)
 
         self.table_menu = tk.Menu(menu_bar, tearoff=0)
-        self.table_menu.add_command(label="Відкрити / закрити", command=self.toggle_table)
+        self.table_menu.add_command(
+            label="Відкрити / закрити", command=self.toggle_table
+        )
         menu_bar.add_cascade(label="Таблиця", menu=self.table_menu)
 
         help_menu = tk.Menu(menu_bar, tearoff=0)
@@ -248,6 +252,24 @@ class MyEditor:
             return
         shape = tool.shape_cls(self.start_x, self.start_y, event.x, event.y)
         self.add_shape(shape)
+
+    def save_shapes(self):
+        path = filedialog.asksaveasfilename(
+            defaultextension=".csv",
+            filetypes=[("CSV", "*.csv")],
+            title="Зберегти об'єкти",
+        )
+        if not path:
+            return
+
+        with open(path, "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow(["type", "x1", "y1", "x2", "y2"])
+            for shape in self.shapes[: self.shape_count]:
+                coords = tuple(
+                    "" if value is None else value for value in shape.get_coords()
+                )
+                writer.writerow((shape.title, *coords))
 
     def clear_canvas(self):
         self.shapes = [None] * self.max_shapes

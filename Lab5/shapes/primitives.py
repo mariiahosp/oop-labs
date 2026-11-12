@@ -2,7 +2,7 @@ from shapes.base import Shape
 
 
 class Point(Shape):
-    title = "Point"
+    title = "Точка"
 
     def __init__(self, x, y):
         self.x = x
