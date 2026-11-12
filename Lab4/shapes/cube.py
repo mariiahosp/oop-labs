@@ -2,15 +2,6 @@ from shapes.primitives import Line, Rectangle
 
 
 class CubeShape(Rectangle, Line):
-    """Каркас куба без заливки.
-
-    Обидва батьки походять від Shape, тому успадкування ромбічне.
-    Rectangle.draw малює передню і задню грані лише контуром.
-    Line.draw малює чотири ребра між їхніми кутами.
-    Перед кожним викликом у поля відповідного батька підставляються координати
-    цієї грані або цього ребра.
-    """
-
     def __init__(self, x1, y1, x2, y2):
         Rectangle.__init__(self, x1, y1, x2, y2)
         Line.__init__(self, x1, y1, x2, y2)

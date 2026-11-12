@@ -2,14 +2,6 @@ from shapes.primitives import Ellipse, Line
 
 
 class LineWithCircles(Line, Ellipse):
-    """Лінія з кружечками.
-
-    Обидва батьки походять від Shape, тому успадкування ромбічне.
-    draw збирається з уже готових методів, без власного create_line і create_oval:
-    Line.draw малює відрізок, Ellipse.draw — кружечок на кожному кінці.
-    Перед викликом Ellipse.draw у поля еліпса підставляються межі цього кружечка.
-    """
-
     def __init__(self, x1, y1, x2, y2):
         Line.__init__(self, x1, y1, x2, y2)
         Ellipse.__init__(self, x1, y1, x2, y2)

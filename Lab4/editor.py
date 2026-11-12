@@ -9,8 +9,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class Tool:
-    """Один інструмент панелі: підпис, клас фігури, підказка, іконка."""
-
     def __init__(self, label, shape_cls, tip, icon_file):
         self.label = label
         self.shape_cls = shape_cls
@@ -23,8 +21,6 @@ class Tool:
 
 
 class MyEditor:
-    """Редактор. Нова фігура додається рядком у TOOLS, коли в неї є draw та іконка."""
-
     TOOLS = (
         Tool("Точка", Point, "Намалювати точку", "point.png"),
         Tool("Лінія", Line, "Намалювати лінію", "line.png"),
