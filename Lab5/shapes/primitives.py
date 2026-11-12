@@ -9,7 +9,7 @@ class Point(Shape):
         self.y = y
 
     def get_coords(self):
-        return self.x, self.y
+        return self.x, self.y, None, None
 
     def draw(self, canvas):
         radius = 3
@@ -24,7 +24,7 @@ class Point(Shape):
 
 
 class Line(Shape):
-    title = "Line"
+    title = "Лінія"
 
     def get_coords(self):
         return self.x1, self.y1, self.x2, self.y2

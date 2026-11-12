@@ -1,6 +1,7 @@
 import os
 import tkinter as tk
 from tkinter import messagebox
+from my_table import MyTable
 
 from shapes import CubeShape, Ellipse, Line, LineWithCircles, Point, Rectangle
 from tooltip import ToolTip
@@ -77,7 +78,10 @@ class MyEditor:
         self.bind_mouse_events()
         self.update_shape_indicator()
 
+        self.table = MyTable(self.root)
+
     def destroy(self):
+        self.table.close()
         self.shapes = None
         self.shape_count = 0
         self.icons.clear()
@@ -99,7 +103,7 @@ class MyEditor:
         return tool.label
 
     def update_shape_indicator(self):
-        self.root.title(f"Lab4 — {self.shape_label(self.current_shape)}")
+        self.root.title(f"Lab5 — {self.shape_label(self.current_shape)}")
         self.update_toolbar()
 
     def create_menu(self):
@@ -123,6 +127,10 @@ class MyEditor:
             )
 
         menu_bar.add_cascade(label="Об'єкти", menu=self.objects_menu)
+
+        self.table_menu = tk.Menu(menu_bar, tearoff=0)
+        self.table_menu.add_command(label="Відкрити / закрити", command=self.toggle_table)
+        menu_bar.add_cascade(label="Таблиця", menu=self.table_menu)
 
         help_menu = tk.Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="Про програму", command=self.show_about)
@@ -190,6 +198,17 @@ class MyEditor:
         self.shapes[self.shape_count] = shape
         self.shape_count += 1
         shape.draw(self.canvas)
+        self.refresh_table()
+
+    def toggle_table(self):
+        self.table.toggle(self.shapes[: self.shape_count])
+
+    def toggle_table_menu(self):
+        self.toggle_table()
+        self.root.after(0, self.table_menu.unpost)
+
+    def refresh_table(self):
+        self.table.refresh(self.shapes[: self.shape_count])
 
     def on_mouse_down(self, event):
         self.start_x = event.x
@@ -234,9 +253,10 @@ class MyEditor:
         self.shapes = [None] * self.max_shapes
         self.shape_count = 0
         self.canvas.delete("all")
+        self.refresh_table()
 
     def show_about(self):
         messagebox.showinfo(
             "Про програму",
-            "Lab4 — графічний редактор об'єктів.\n" "Розроблено на Python і Tkinter.",
+            "Lab5 — графічний редактор об'єктів.\n" "Розроблено на Python і Tkinter.",
         )
