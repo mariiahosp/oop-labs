@@ -79,7 +79,7 @@ class MyEditor:
         self.bind_mouse_events()
         self.update_shape_indicator()
 
-        self.table = MyTable(self.root, on_select=self.highlight_shape)
+        self.table = MyTable(self.root, on_select=self.delete_shape)
 
     def destroy(self):
         self.table.close()
@@ -118,6 +118,23 @@ class MyEditor:
             width=2,
             tags="highlight",
         )
+
+    def delete_shape(self, index):
+        if index is None or index >= self.shape_count:
+            return
+        self.root.after_idle(lambda index=index: self.remove_shape(index))
+
+    def remove_shape(self, index):
+        if index >= self.shape_count:
+            return
+        for i in range(index, self.shape_count - 1):
+            self.shapes[i] = self.shapes[i + 1]
+        self.shape_count -= 1
+        self.shapes[self.shape_count] = None
+        self.canvas.delete("all")
+        for shape in self.shapes[: self.shape_count]:
+            shape.draw(self.canvas)
+        self.refresh_table()
 
     def shape_label(self, shape_name):
         tool = self.tool_by_name(shape_name)
