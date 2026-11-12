@@ -5,49 +5,60 @@ classDiagram
 
     class Shape {
         <<abstract>>
+        +title
         +draw(canvas)*
+        +get_coords()*
         +draw_rubber(canvas, x1, y1, x2, y2)
     }
 
     class Point {
+        +title
         -x
         -y
         +__init__(x, y)
+        +get_coords()
         +draw(canvas)
     }
 
     class Line {
+        +title
         -x1
         -y1
         -x2
         -y2
         +__init__(x1, y1, x2, y2)
+        +get_coords()
         +draw(canvas)
         +draw_rubber(canvas, x1, y1, x2, y2)
     }
 
     class Rectangle {
+        +title
         -cx
         -cy
         -x
         -y
         +__init__(cx, cy, x, y)
         +get_bounds()
+        +get_coords()
         +draw(canvas)
         +draw_rubber(canvas, x1, y1, x2, y2)
     }
 
     class Ellipse {
+        +title
         -x1
         -y1
         -x2
         -y2
         +__init__(x1, y1, x2, y2)
+        +get_coords()
         +draw(canvas)
         +draw_rubber(canvas, x1, y1, x2, y2)
     }
 
     class LineWithCircles {
+        +title
         -line_color
         -outline_color
         -fill_color
@@ -58,6 +69,7 @@ classDiagram
     }
 
     class CubeShape {
+        +title
         -outline_color
         -fill_color
         -line_color
@@ -67,31 +79,29 @@ classDiagram
     }
 
     class MyEditor {
+        -_instance
         -root
         -shapes : Shape*[107]
-        -max_shapes = 107
         -shape_count
-        -current_shape
-        -drawing_shape
-        -tool_buttons
-        -tool_icons
-        -icons
+        -table
+        +get_instance(root)
         +__init__(root)
         +destroy()
-        +create_menu()
-        +create_toolbar()
-        +update_toolbar()
-        +update_shape_indicator()
-        +create_canvas()
-        +select_shape()
-        +select_shape_by_name(shape_name)
-        +bind_mouse_events()
         +add_shape(shape)
-        +on_mouse_down(event)
-        +on_mouse_move(event)
-        +on_mouse_up(event)
         +clear_canvas()
-        +show_about()
+        +save_shapes()
+        +toggle_table()
+        +refresh_table()
+    }
+
+    class MyTable {
+        -root
+        -window
+        -tree
+        +open(shapes)
+        +close()
+        +toggle(shapes)
+        +refresh(shapes)
     }
 
     class Tool {
@@ -106,7 +116,6 @@ classDiagram
     class ToolTip {
         -widget
         -text
-        -tooltip
         +__init__(widget, text)
         +show(event)
         +hide(event)
@@ -123,11 +132,8 @@ classDiagram
 
     MyEditor "1" o-- "107" Shape : shapes
     MyEditor "1" *-- "6" Tool : TOOLS
-    MyEditor ..> Point : creates
-    MyEditor ..> Line : creates
-    MyEditor ..> Rectangle : creates
-    MyEditor ..> Ellipse : creates
-    MyEditor ..> LineWithCircles : creates
-    MyEditor ..> CubeShape : creates
+    MyEditor --> MyTable : table
+    MyTable ..> Shape : title, get_coords
     MyEditor ..> ToolTip : uses
+
 ```
