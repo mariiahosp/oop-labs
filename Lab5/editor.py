@@ -79,7 +79,7 @@ class MyEditor:
         self.bind_mouse_events()
         self.update_shape_indicator()
 
-        self.table = MyTable(self.root)
+        self.table = MyTable(self.root, on_select=self.highlight_shape)
 
     def destroy(self):
         self.table.close()
@@ -96,6 +96,28 @@ class MyEditor:
             if tool.name == shape_name:
                 return tool
         return None
+
+    def highlight_shape(self, index):
+        self.canvas.delete("highlight")
+        if index is None or index >= self.shape_count:
+            return
+
+        shape = self.shapes[index]
+        x1, y1, x2, y2 = shape.highlight_box()
+        if x2 is None:
+            x2 = x1
+        if y2 is None:
+            y2 = y1
+        pad = 6
+        self.canvas.create_rectangle(
+            min(x1, x2) - pad,
+            min(y1, y2) - pad,
+            max(x1, x2) + pad,
+            max(y1, y2) + pad,
+            outline="red",
+            width=2,
+            tags="highlight",
+        )
 
     def shape_label(self, shape_name):
         tool = self.tool_by_name(shape_name)

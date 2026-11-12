@@ -11,6 +11,11 @@ class CubeShape(Rectangle, Line):
         self.fill_color = ""
         self.line_color = "sienna"
 
+    def highlight_box(self):
+        left, top, right, bottom = self.get_bounds()
+        depth = min(abs(right - left), abs(bottom - top)) * 0.45
+        return left, top - depth, right + depth, bottom
+
     def _stroke(self, canvas, start, end):
         self.x1, self.y1 = start
         self.x2, self.y2 = end

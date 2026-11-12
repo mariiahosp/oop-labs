@@ -5,8 +5,9 @@ from tkinter import ttk
 class MyTable:
     COLUMNS = ("name", "x1", "y1", "x2", "y2")
 
-    def __init__(self, root):
+    def __init__(self, root, on_select=None):
         self.root = root
+        self.on_select = on_select
         self.window = None
         self.tree = None
 
@@ -31,6 +32,7 @@ class MyTable:
             self.tree.column(column, width=70, anchor=tk.CENTER)
         self.tree.column("name", width=160, anchor=tk.W)
         self.tree.pack(fill=tk.BOTH, expand=True)
+        self.tree.bind("<<TreeviewSelect>>", self.on_select_row)
         self.refresh(shapes)
 
     def close(self):
@@ -49,8 +51,17 @@ class MyTable:
         if not self.is_open():
             return
         self.tree.delete(*self.tree.get_children())
-        for shape in shapes:
+        for index, shape in enumerate(shapes):
             coords = tuple(
                 "" if value is None else value for value in shape.get_coords()
             )
-            self.tree.insert("", tk.END, values=(shape.title, *coords))
+            self.tree.insert("", tk.END, iid=str(index), values=(shape.title, *coords))
+
+    def on_select_row(self, event):
+        if self.on_select is None:
+            return
+        selected = self.tree.selection()
+        if not selected:
+            self.on_select(None)
+            return
+        self.on_select(int(selected[0]))
