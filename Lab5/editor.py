@@ -150,6 +150,7 @@ class MyEditor:
         menu_bar = tk.Menu(self.root)
 
         file_menu = tk.Menu(menu_bar, tearoff=0)
+        file_menu.add_command(label="Відкрити", command=self.load_shapes)
         file_menu.add_command(label="Зберегти", command=self.save_shapes)
         file_menu.add_command(label="Очистити", command=self.clear_canvas)
         file_menu.add_separator()
@@ -291,6 +292,34 @@ class MyEditor:
             return
         shape = tool.shape_cls(self.start_x, self.start_y, event.x, event.y)
         self.add_shape(shape)
+
+    def load_shapes(self):
+        path = filedialog.askopenfilename(
+            filetypes=[("CSV", "*.csv")],
+            title="Відкрити об'єкти",
+        )
+        if not path:
+            return
+
+        by_title = {tool.shape_cls.title: tool.shape_cls for tool in self.TOOLS}
+        loaded = []
+
+        with open(path, newline="", encoding="utf-8") as file:
+            for row in csv.reader(file):
+                if not row or row[0] == "type":
+                    continue
+                title, x1, y1, x2, y2 = row
+                shape_cls = by_title.get(title)
+                if shape_cls is None:
+                    continue
+                x1, y1 = int(x1), int(y1)
+                x2 = int(x2) if x2 else None
+                y2 = int(y2) if y2 else None
+                loaded.append(shape_cls.from_coords(x1, y1, x2, y2))
+
+        self.clear_canvas()
+        for shape in loaded[: self.max_shapes]:
+            self.add_shape(shape)
 
     def save_shapes(self):
         path = filedialog.asksaveasfilename(

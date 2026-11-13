@@ -22,6 +22,10 @@ class Point(Shape):
             outline="black",
         )
 
+    @classmethod
+    def from_coords(cls, x1, y1, x2, y2):
+        return cls(x1, y1)
+
 
 class Line(Shape):
     title = "Лінія"
@@ -96,6 +100,12 @@ class Rectangle(Shape):
         self.draw(canvas)
         self.dash = None
         self.tags = None
+
+    @classmethod
+    def from_coords(cls, x1, y1, x2, y2):
+        cx = (x1 + x2) / 2
+        cy = (y1 + y2) / 2
+        return cls(cx, cy, x2, y2)
 
 
 class Ellipse(Shape):
