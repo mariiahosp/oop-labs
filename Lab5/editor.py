@@ -79,7 +79,11 @@ class MyEditor:
         self.bind_mouse_events()
         self.update_shape_indicator()
 
-        self.table = MyTable(self.root, on_select=self.delete_shape)
+        self.table = MyTable(
+            self.root,
+            on_select=self.highlight_shape,
+            on_delete=self.delete_shape,
+        )
 
     def destroy(self):
         self.table.close()

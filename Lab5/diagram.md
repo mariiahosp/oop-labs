@@ -8,6 +8,8 @@ classDiagram
         +title
         +draw(canvas)*
         +get_coords()*
+        +highlight_box()
+        +from_coords(x1, y1, x2, y2)
         +draw_rubber(canvas, x1, y1, x2, y2)
     }
 
@@ -17,6 +19,7 @@ classDiagram
         -y
         +__init__(x, y)
         +get_coords()
+        +from_coords(x1, y1, x2, y2)
         +draw(canvas)
     }
 
@@ -41,6 +44,7 @@ classDiagram
         +__init__(cx, cy, x, y)
         +get_bounds()
         +get_coords()
+        +from_coords(x1, y1, x2, y2)
         +draw(canvas)
         +draw_rubber(canvas, x1, y1, x2, y2)
     }
@@ -74,6 +78,7 @@ classDiagram
         -fill_color
         -line_color
         +__init__(x1, y1, x2, y2)
+        +highlight_box()
         +draw(canvas)
         +draw_rubber(canvas, x1, y1, x2, y2)
     }
@@ -90,6 +95,9 @@ classDiagram
         +add_shape(shape)
         +clear_canvas()
         +save_shapes()
+        +load_shapes()
+        +highlight_shape(index)
+        +delete_shape(index)
         +toggle_table()
         +refresh_table()
     }
@@ -102,6 +110,8 @@ classDiagram
         +close()
         +toggle(shapes)
         +refresh(shapes)
+        +on_select_row(event)
+        +on_delete_key(event)
     }
 
     class Tool {

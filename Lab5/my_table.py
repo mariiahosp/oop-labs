@@ -5,14 +5,20 @@ from tkinter import ttk
 class MyTable:
     COLUMNS = ("name", "x1", "y1", "x2", "y2")
 
-    def __init__(self, root, on_select=None):
+    def __init__(self, root, on_select=None, on_delete=None):
         self.root = root
         self.on_select = on_select
+        self.on_delete = on_delete
         self.window = None
         self.tree = None
 
     def is_open(self):
-        return self.window is not None and self.window.winfo_exists()
+        if self.window is None:
+            return False
+        try:
+            return bool(self.window.winfo_exists())
+        except tk.TclError:
+            return False
 
     def open(self, shapes):
         if self.is_open():
@@ -33,6 +39,8 @@ class MyTable:
         self.tree.column("name", width=160, anchor=tk.W)
         self.tree.pack(fill=tk.BOTH, expand=True)
         self.tree.bind("<<TreeviewSelect>>", self.on_select_row)
+        self.tree.bind("<Delete>", self.on_delete_key)
+        self.tree.bind("<BackSpace>", self.on_delete_key)
         self.refresh(shapes)
 
     def close(self):
@@ -65,3 +73,11 @@ class MyTable:
             self.on_select(None)
             return
         self.on_select(int(selected[0]))
+
+    def on_delete_key(self, event):
+        if self.on_delete is None:
+            return
+        selected = self.tree.selection()
+        if not selected:
+            return
+        self.on_delete(int(selected[0]))
