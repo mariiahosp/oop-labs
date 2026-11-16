@@ -194,7 +194,6 @@ class MyEditor:
             image = tk.PhotoImage(file=os.path.join(BASE_DIR, "icons", tool.icon_file))
             self.icons[tool.name] = image
 
-            # Не Button: на macOS системна кнопка не зберігає втиснутий вигляд.
             button = tk.Frame(toolbar, bd=2, relief=tk.RAISED, bg="#f3f3f3")
             icon = tk.Label(
                 button,
