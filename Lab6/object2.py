@@ -40,6 +40,12 @@ def main():
             meta.config(text=f"{n} чисел    від {min_value:g} до {max_value:g}")
             show_vector(values)
 
+            text = "\n".join(f"{value:.3f}" for value in values)
+            root.clipboard_clear()
+            root.clipboard_append(text)
+            root.update_idletasks()
+            (BASE / "object3.task").write_text("read\n")
+
         root.after(200, check_task)
 
     def show_vector(values):
