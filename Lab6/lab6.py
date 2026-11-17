@@ -76,6 +76,10 @@ def main():
             status.config(text=f"n = {n}\nMin = {min_value}\nMax = {max_value}")
             ensure_started("object2")
             ensure_started("object3")
+
+            task = BASE / "object2.task"
+            task.write_text(f"{n}\n{min_value}\n{max_value}")
+
             dialog.destroy()
 
         tk.Button(dialog, text="Виконати", command=on_execute).grid(

@@ -11,8 +11,8 @@ def main():
     atexit.register(lambda: PID_FILE.unlink(missing_ok=True))
 
     root = tk.Tk()
-    root.title("Objec3")
-    root.geometry("420x260+480+40")
+    root.title("Object3")
+    root.geometry("420x260+40+340")
     tk.Label(root, text="Object3 — відсортований вектор", font=("Arial", 16)).pack(
         expand=True
     )
