@@ -1,11 +1,67 @@
 import tkinter as tk
+from tkinter import messagebox
 
 
 def main():
     root = tk.Tk()
     root.title("Lab6")
     root.geometry("420x260+40+40")
-    tk.Label(root, text="Lab6 — менеджер", font=("Arial", 16)).pack(expand=True)
+
+    status = tk.Label(root, text="Lab6 — менеджер", font=("Arial", 16))
+    status.pack(expand=True)
+
+    def open_dialog():
+        dialog = tk.Toplevel(root)
+        dialog.title("Dialog")
+        dialog.geometry("280x180+80+80")
+        dialog.transient(root)
+        dialog.grab_set()
+
+        tk.Label(dialog, text="n").grid(row=0, column=0, padx=8, pady=6, sticky="e")
+        tk.Label(dialog, text="Min").grid(row=1, column=0, padx=8, pady=6, sticky="e")
+        tk.Label(dialog, text="Max").grid(row=2, column=0, padx=8, pady=6, sticky="e")
+
+        n_var = tk.StringVar()
+        min_var = tk.StringVar()
+        max_var = tk.StringVar()
+
+        tk.Entry(dialog, textvariable=n_var, width=16).grid(row=0, column=1, padx=8)
+        tk.Entry(dialog, textvariable=min_var, width=16).grid(row=1, column=1, padx=8)
+        tk.Entry(dialog, textvariable=max_var, width=16).grid(row=2, column=1, padx=8)
+
+        def on_execute():
+            try:
+                n = int(n_var.get())
+                min_value = float(min_var.get())
+                max_value = float(max_var.get())
+            except ValueError:
+                messagebox.showerror(
+                    "Помилка", "n — ціле число, Min і Max — числа", parent=dialog
+                )
+                return
+            if n <= 0 or min_value >= max_value:
+                messagebox.showerror(
+                    "Помилка", "Потрібно n > 0 і Min < Max", parent=dialog
+                )
+                return
+            status.config(text=f"n = {n}\nMin = {min_value}\nMax = {max_value}")
+            dialog.destroy()
+
+        tk.Button(dialog, text="Виконати", command=on_execute).grid(
+            row=3, column=0, pady=12
+        )
+        tk.Button(dialog, text="Скасувати", command=dialog.destroy).grid(
+            row=3, column=1, pady=12
+        )
+
+    menu = tk.Menu(root)
+    work = tk.Menu(menu, tearoff=0)
+    work.add_command(label="Виконати", command=open_dialog)
+    work.add_separator()
+    work.add_command(label="Вихід", command=root.destroy)
+    menu.add_cascade(label="Робота", menu=work)
+    root.config(menu=menu)
+
     root.mainloop()
 
 
