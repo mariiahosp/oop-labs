@@ -2,10 +2,13 @@ import atexit
 import os
 import tkinter as tk
 from pathlib import Path
+import random
 
 BASE = Path(__file__).resolve().parent
 PID_FILE = BASE / "object2.pid"
 TASK_FILE = BASE / "object2.task"
+
+COLUMNS = 5
 
 
 def main():
@@ -14,21 +17,43 @@ def main():
 
     root = tk.Tk()
     root.title("Object2")
-    root.geometry("420x260+480+40")
-    status = tk.Label(root, text="Object2 — згенерований вектор", font=("Arial", 16))
-    status.pack(expand=True)
+    root.geometry("560x360+480+40")
+
+    tk.Label(root, text="Згенерований вектор", font=("Arial", 11), fg="#8e8e8e").pack(
+        pady=(14, 0)
+    )
+    meta = tk.Label(root, text="очікування параметрів", font=("Arial", 10), fg="#8e8e8e")
+    meta.pack(pady=(2, 4))
+
+    grid = tk.Frame(root)
+    grid.pack(expand=True, pady=(0, 12))
 
     def check_task():
         if TASK_FILE.exists():
             lines = TASK_FILE.read_text().splitlines()
             TASK_FILE.unlink()
-            if len(lines) == 3:
-                n, min_value, max_value = lines
-                status.config(
-                    text=f"Отримано\nn = {n}\nMin = {min_value}\nMax = {max_value}"
-                )
+
+            n = int(lines[0])
+            min_value = float(lines[1])
+            max_value = float(lines[2])
+            values = [random.uniform(min_value, max_value) for _ in range(n)]
+            meta.config(text=f"{n} чисел    від {min_value:g} до {max_value:g}")
+            show_vector(values)
 
         root.after(200, check_task)
+
+    def show_vector(values):
+        for child in grid.winfo_children():
+            child.destroy()
+        for index, value in enumerate(values):
+            row, column = divmod(index, COLUMNS)
+            tk.Label(
+                grid,
+                text=f"{value:8.3f}",
+                font=("Menlo", 16),
+                width=8,
+                anchor="e",
+            ).grid(row=row, column=column, padx=8, pady=5)
 
     check_task()
     root.mainloop()
