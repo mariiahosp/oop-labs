@@ -28,6 +28,12 @@ def main():
     grid.pack(expand=True, pady=(0, 12))
 
     def check_task():
+        quit_file = BASE / "object3.quit"
+        if quit_file.exists():
+            quit_file.unlink()
+            root.destroy()
+            return
+
         if TASK_FILE.exists():
             TASK_FILE.unlink()
             try:

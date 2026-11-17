@@ -39,6 +39,12 @@ def main():
             [sys.executable, BASE / f"{script_name}.py"]
         )
 
+    def close_all():
+        for name in ("object2", "object3"):
+            if program_is_running(BASE / f"{name}.pid"):
+                (BASE / f"{name}.quit").write_text("quit\n")
+        root.destroy()
+
     def open_dialog():
         dialog = tk.Toplevel(root)
         dialog.title("Dialog")
@@ -93,9 +99,11 @@ def main():
     work = tk.Menu(menu, tearoff=0)
     work.add_command(label="Виконати", command=open_dialog)
     work.add_separator()
-    work.add_command(label="Вихід", command=root.destroy)
+    work.add_command(label="Вихід", command=close_all)
     menu.add_cascade(label="Робота", menu=work)
     root.config(menu=menu)
+
+    root.protocol("WM_DELETE_WINDOW", close_all)
 
     root.mainloop()
 
