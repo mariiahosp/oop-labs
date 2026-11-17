@@ -1,5 +1,11 @@
+import os
+import subprocess
+import sys
 import tkinter as tk
+from pathlib import Path
 from tkinter import messagebox
+
+BASE = Path(__file__).resolve().parent
 
 
 def main():
@@ -9,6 +15,29 @@ def main():
 
     status = tk.Label(root, text="Lab6 — менеджер", font=("Arial", 16))
     status.pack(expand=True)
+
+    started = {}
+
+    def program_is_running(pid_file):
+        if not pid_file.exists():
+            return False
+        try:
+            pid = int(pid_file.read_text().strip())
+            os.kill(pid, 0)
+        except (OSError, ValueError):
+            pid_file.unlink(missing_ok=True)
+            return False
+        return True
+
+    def ensure_started(script_name):
+        proc = started.get(script_name)
+        if proc is not None and proc.poll() is None:
+            return
+        if program_is_running(BASE / f"{script_name}.pid"):
+            return
+        started[script_name] = subprocess.Popen(
+            [sys.executable, BASE / f"{script_name}.py"]
+        )
 
     def open_dialog():
         dialog = tk.Toplevel(root)
@@ -45,6 +74,8 @@ def main():
                 )
                 return
             status.config(text=f"n = {n}\nMin = {min_value}\nMax = {max_value}")
+            ensure_started("object2")
+            ensure_started("object3")
             dialog.destroy()
 
         tk.Button(dialog, text="Виконати", command=on_execute).grid(
