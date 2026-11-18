@@ -51,6 +51,8 @@ def main():
         dialog.geometry("280x180+80+80")
         dialog.transient(root)
         dialog.grab_set()
+        dialog.columnconfigure(0, weight=1)
+        dialog.columnconfigure(1, weight=1)
 
         tk.Label(dialog, text="n").grid(row=0, column=0, padx=8, pady=6, sticky="e")
         tk.Label(dialog, text="Min").grid(row=1, column=0, padx=8, pady=6, sticky="e")
@@ -88,11 +90,13 @@ def main():
 
             dialog.destroy()
 
-        tk.Button(dialog, text="Виконати", command=on_execute).grid(
-            row=3, column=0, pady=12
-        )
-        tk.Button(dialog, text="Скасувати", command=dialog.destroy).grid(
-            row=3, column=1, pady=12
+        buttons = tk.Frame(dialog)
+        buttons.grid(row=3, column=0, columnspan=2, sticky="ew", pady=12)
+        pair = tk.Frame(buttons)
+        pair.pack()
+        tk.Button(pair, text="Виконати", command=on_execute).pack(side="left", padx=8)
+        tk.Button(pair, text="Скасувати", command=dialog.destroy).pack(
+            side="left", padx=8
         )
 
     menu = tk.Menu(root)
