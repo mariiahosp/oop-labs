@@ -9,6 +9,7 @@ PID_FILE = BASE / "object2.pid"
 TASK_FILE = BASE / "object2.task"
 
 COLUMNS = 5
+GEOMETRY = "560x360+480+40"
 
 
 def main():
@@ -17,7 +18,7 @@ def main():
 
     root = tk.Tk()
     root.title("Object2")
-    root.geometry("560x360+480+40")
+    root.geometry(GEOMETRY)
 
     tk.Label(root, text="Згенерований вектор", font=("Arial", 11), fg="#8e8e8e").pack(
         pady=(14, 0)
@@ -27,6 +28,18 @@ def main():
 
     grid = tk.Frame(root)
     grid.pack(expand=True, pady=(0, 12))
+
+    def present_window():
+        root.deiconify()
+        root.geometry(GEOMETRY)
+        root.lift()
+        root.attributes("-topmost", True)
+        root.after(150, drop_topmost)
+        root.focus_force()
+
+    def drop_topmost():
+        if root.winfo_exists():
+            root.attributes("-topmost", False)
 
     def check_task():
         quit_file = BASE / "object2.quit"
@@ -44,6 +57,7 @@ def main():
             max_value = float(lines[2])
             values = [random.uniform(min_value, max_value) for _ in range(n)]
             meta.config(text=f"{n} чисел    від {min_value:g} до {max_value:g}")
+            present_window()
             show_vector(values)
 
             text = "\n".join(f"{value:.3f}" for value in values)

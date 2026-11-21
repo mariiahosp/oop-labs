@@ -8,6 +8,7 @@ PID_FILE = BASE / "object3.pid"
 TASK_FILE = BASE / "object3.task"
 
 COLUMNS = 5
+GEOMETRY = "560x360+40+420"
 
 
 def main():
@@ -16,7 +17,7 @@ def main():
 
     root = tk.Tk()
     root.title("Object3")
-    root.geometry("560x360+40+420")
+    root.geometry(GEOMETRY)
 
     tk.Label(root, text="Відсортований вектор", font=("Arial", 11), fg="#8e8e8e").pack(
         pady=(14, 0)
@@ -27,6 +28,18 @@ def main():
     grid = tk.Frame(root)
     grid.pack(expand=True, pady=(0, 12))
 
+    def present_window():
+        root.deiconify()
+        root.geometry(GEOMETRY)
+        root.lift()
+        root.attributes("-topmost", True)
+        root.after(150, drop_topmost)
+        root.focus_force()
+
+    def drop_topmost():
+        if root.winfo_exists():
+            root.attributes("-topmost", False)
+
     def check_task():
         quit_file = BASE / "object3.quit"
         if quit_file.exists():
@@ -36,14 +49,20 @@ def main():
 
         if TASK_FILE.exists():
             TASK_FILE.unlink()
+            present_window()
             try:
                 raw = root.clipboard_get()
             except tk.TclError:
                 raw = ""
-            values = [float(line) for line in raw.splitlines() if line.strip()]
-            values.sort()
-            meta.config(text=f"{len(values)} чисел    відсортовано")
-            show_vector(values)
+            try:
+                values = [float(line) for line in raw.splitlines() if line.strip()]
+            except ValueError:
+                meta.config(text="у буфері немає чисел")
+                show_vector([])
+            else:
+                values.sort()
+                meta.config(text=f"{len(values)} чисел    відсортовано")
+                show_vector(values)
         root.after(200, check_task)
 
     def show_vector(values):

@@ -35,13 +35,16 @@ def main():
             return
         if program_is_running(BASE / f"{script_name}.pid"):
             return
+        (BASE / f"{script_name}.quit").unlink(missing_ok=True)
         started[script_name] = subprocess.Popen(
             [sys.executable, BASE / f"{script_name}.py"]
         )
 
     def close_all():
         for name in ("object2", "object3"):
-            if program_is_running(BASE / f"{name}.pid"):
+            proc = started.get(name)
+            launched = proc is not None and proc.poll() is None
+            if launched or program_is_running(BASE / f"{name}.pid"):
                 (BASE / f"{name}.quit").write_text("quit\n")
         root.destroy()
 
